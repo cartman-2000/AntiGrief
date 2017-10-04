@@ -16,6 +16,7 @@ namespace AntiGrief
         protected override void Load()
         {
             Instance = this;
+            Configuration.Save();
 
             Asset[] AssetList = Assets.find(EAssetType.ITEM);
 
@@ -28,6 +29,7 @@ namespace AntiGrief
             ushort magsModified = 0;
 
             Logger.LogWarning("Starting anti grief modification run.");
+            BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
             for (int i = 0; i < AssetList.Length; i++)
             {
                 Asset asset = AssetList[i];
@@ -42,8 +44,6 @@ namespace AntiGrief
                 }
                 if (shouldSkip)
                     continue;
-                BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
-                Type type = null;
                 if (asset is ItemWeaponAsset)
                 {
                     ItemWeaponAsset weaponAsset = asset as ItemWeaponAsset;
@@ -96,13 +96,30 @@ namespace AntiGrief
             }
 
 
-/*            Asset[] vehicleList = Assets.find(EAssetType.VEHICLE);
+            Asset[] vehicleList = Assets.find(EAssetType.VEHICLE);
             for (int v = 0; v < vehicleList.Length; v++)
             {
                 Asset asset = vehicleList[v];
                 bool shouldSkip = false;
+                for (int i = 0; i < Configuration.Instance.SkipVehicleIDs.Count; i++)
+                {
+                    if (asset.id == Configuration.Instance.SkipVehicleIDs[i])
+                    {
+                        shouldSkip = true;
+                        break;
+                    }
+                }
+                if (shouldSkip == true)
+                    continue;
 
-            }*/
+                VehicleAsset vAsset = asset as VehicleAsset;
+                if (!vAsset.isVulnerable || !vAsset.canTiresBeDamaged)
+                {
+                    vehiclesModified++;
+                    vAsset.GetType().GetField("_isVulnerable", bindingFlags).SetValue(vAsset, false);
+                    vAsset.GetType().GetProperty("canTiresBeDamaged", bindingFlags | BindingFlags.Public).SetValue(vAsset, false, null);
+                }
+            }
             Logger.LogWarning(string.Format("Finished modification run, counts of bundles modified: Guns: {0}, Mags: {6}, Melee: {1}, Throwables: {2}, Traps: {3}, Charges: {4}, Vehicles: {5}.", gunsModified, meleesModified, throwablesModified, trapsModified, chargesModified, vehiclesModified, magsModified));
         }
 

@@ -21,7 +21,7 @@ namespace AntiGrief
         };
 
         [XmlArray("SkipVehicleIDs"), XmlArrayItem(ElementName = "ID")]
-        public List<ushort> SkipVeihicleIDs = new List<ushort>()
+        public List<ushort> SkipVehicleIDs = new List<ushort>()
         {
             { 76 },
         };
