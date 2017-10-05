@@ -168,6 +168,11 @@ namespace AntiGrief
                     vAsset.GetType().GetProperty("canTiresBeDamaged", bindingFlags | BindingFlags.Public).SetValue(vAsset, false, null);
                     shouldUpdateCount = true;
                 }
+                if (Configuration.Instance.MinVehicleSpawnHealth >= vAsset.healthMax && Configuration.Instance.ModifyMinVehicleSpawnHealth)
+                {
+                    vAsset.GetType().GetField("_healthMax", bindingFlags).SetValue(vAsset, Configuration.Instance.MinVehicleSpawnHealth);
+                    shouldUpdateCount = true;
+                }
                 if (shouldUpdateCount)
                     vehiclesModified++;
             }

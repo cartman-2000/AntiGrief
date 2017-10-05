@@ -10,9 +10,17 @@ namespace AntiGrief
         public bool NegateBarricadeDamage = true;
         public bool NegateStructureDamage = true;
         public bool NegateVehicleDamage = true;
+        public bool NegateObjectDamage = false;
+        public bool NegateResourceDamage = false;
 
         public bool MakeVehiclesInvulnerable = true;
         public bool MakeTiresInvulnerable = true;
+
+        public bool ModifyMinVehicleSpawnHealth = false;
+        public ushort MinVehicleSpawnHealth = 4000;
+
+        public bool ModifyMinBarricadeStructureHealth = false;
+        public ushort MinBarricadeStructureHealth = 1000;
 
         [XmlArray("SkipItemIDs"), XmlArrayItem(ElementName = "ID")]
         public List<ushort> SkipItemIDs = new List<ushort>()
@@ -23,7 +31,7 @@ namespace AntiGrief
         [XmlArray("SkipVehicleIDs"), XmlArrayItem(ElementName = "ID")]
         public List<ushort> SkipVehicleIDs = new List<ushort>()
         {
-            { 76 },
+            { 91 },
         };
         public void LoadDefaults()
         {
