@@ -22,7 +22,7 @@ namespace AntiGrief
         public bool ModifyMinElementSpawnHealth = false;
         public ushort MinElementSpawnHealth = 1000;
         public bool MakeElementsExplosionProof = false;
-
+        public bool MakeElementsInvulnerable = false;
 
         [XmlArray("SkipItemIDs"), XmlArrayItem(ElementName = "ID")]
         public List<ushort> SkipItemIDs = new List<ushort>();
@@ -32,6 +32,7 @@ namespace AntiGrief
 
         [XmlArray("SkipVehicleIDs"), XmlArrayItem(ElementName = "ID")]
         public List<ushort> SkipVehicleIDs = new List<ushort>();
+
         public void LoadDefaults()
         {
             SkipItemIDs = new List<ushort>()

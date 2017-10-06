@@ -220,6 +220,11 @@ namespace AntiGrief
                         basset.GetType().GetField("_proofExplosion", bindingFlags).SetValue(basset, true);
                         shouldUpdateCount = true;
                     }
+                    if (basset.isVulnerable && Configuration.Instance.MakeElementsInvulnerable)
+                    {
+                        basset.GetType().GetField("_isVulnerable", bindingFlags).SetValue(basset, false);
+                        shouldUpdateCount = true;
+                    }
                 }
                 if (asset is ItemStructureAsset)
                 {
@@ -234,7 +239,14 @@ namespace AntiGrief
                         sasset.GetType().GetField("_proofExplosion", bindingFlags).SetValue(sasset, true);
                         shouldUpdateCount = true;
                     }
+                    if (sasset.isVulnerable && Configuration.Instance.MakeElementsInvulnerable)
+                    {
+                        sasset .GetType().GetField("_isVulnerable", bindingFlags).SetValue(sasset , false);
+                        shouldUpdateCount = true;
+                    }
                 }
+                if (shouldUpdateCount)
+                    elementsModified++;
             }
 
             Asset[] vehicleList = Assets.find(EAssetType.VEHICLE);
@@ -260,7 +272,7 @@ namespace AntiGrief
                     vAsset.GetType().GetField("_isVulnerable", bindingFlags).SetValue(vAsset, false);
                     shouldUpdateCount = true;
                 }
-                if (!vAsset.canTiresBeDamaged && Configuration.Instance.MakeTiresInvulnerable)
+                if (vAsset.canTiresBeDamaged && Configuration.Instance.MakeTiresInvulnerable)
                 {
                     vAsset.GetType().GetProperty("canTiresBeDamaged", bindingFlags | BindingFlags.Public).SetValue(vAsset, false, null);
                     shouldUpdateCount = true;
