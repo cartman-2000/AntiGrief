@@ -114,28 +114,28 @@ namespace AntiGrief
                     ItemTrapAsset trapAsset = asset as ItemTrapAsset;
                     if (trapAsset.barricadeDamage > 0 && Configuration.Instance.NegateBarricadeDamage)
                     {
-                        trapAsset.GetType().GetField("_barricadeDamage", bindingFlags).SetValue(trapAsset, 0);
+                        trapAsset.barricadeDamage = 0;
                         shouldUpdateCount = true;
                     }
                     if (trapAsset.structureDamage > 0 && Configuration.Instance.NegateStructureDamage)
                     {
-                        trapAsset.GetType().GetField("_structureDamage", bindingFlags).SetValue(trapAsset, 0);
+                        trapAsset.structureDamage = 0;
                         shouldUpdateCount = true;
                     }
-                    if (trapAsset.structureDamage > 0 && Configuration.Instance.NegateVehicleDamage)
+                    if (trapAsset.vehicleDamage > 0 && Configuration.Instance.NegateVehicleDamage)
                     {
-                        trapAsset.GetType().GetField("_vehicleDamage", bindingFlags).SetValue(trapAsset, 0);
+                        trapAsset.vehicleDamage = 0;
                         shouldUpdateCount = true;
                     }
 
                     if (trapAsset.objectDamage > 0 && Configuration.Instance.NegateObjectDamage)
                     {
-                        trapAsset.GetType().GetField("_objectDamage", bindingFlags).SetValue(trapAsset, 0);
+                        trapAsset.objectDamage = 0;
                         shouldUpdateCount = true;
                     }
                     if (trapAsset.resourceDamage > 0 && Configuration.Instance.NegateResourceDamage)
                     {
-                        trapAsset.GetType().GetField("_resourceDamage", bindingFlags).SetValue(trapAsset, 0);
+                        trapAsset.resourceDamage = 0;
                         shouldUpdateCount = true;
                     }
 
@@ -147,28 +147,28 @@ namespace AntiGrief
                     ItemChargeAsset chargeAsset = asset as ItemChargeAsset;
                     if (chargeAsset.barricadeDamage > 0 && Configuration.Instance.NegateBarricadeDamage)
                     {
-                        chargeAsset.GetType().GetField("_barricadeDamage", bindingFlags).SetValue(chargeAsset, 0);
+                        chargeAsset.barricadeDamage = 0;
                         shouldUpdateCount = true;
                     }
                     if (chargeAsset.structureDamage > 0 && Configuration.Instance.NegateStructureDamage)
                     {
-                        chargeAsset.GetType().GetField("_structureDamage", bindingFlags).SetValue(chargeAsset, 0);
+                        chargeAsset.structureDamage = 0;
                         shouldUpdateCount = true;
                     }
                     if (chargeAsset.vehicleDamage > 0 && Configuration.Instance.NegateVehicleDamage)
                     {
-                        chargeAsset.GetType().GetField("_vehicleDamage", bindingFlags).SetValue(chargeAsset, 0);
+                        chargeAsset.vehicleDamage = 0;
                         shouldUpdateCount = true;
                     }
 
                     if (chargeAsset.objectDamage > 0 && Configuration.Instance.NegateObjectDamage)
                     {
-                        chargeAsset.GetType().GetField("_objectDamage", bindingFlags).SetValue(chargeAsset, 0);
+                        chargeAsset.objectDamage = 0;
                         shouldUpdateCount = true;
                     }
                     if (chargeAsset.resourceDamage > 0 && Configuration.Instance.NegateResourceDamage)
                     {
-                        chargeAsset.GetType().GetField("_resourceDamage", bindingFlags).SetValue(chargeAsset, 0);
+                        chargeAsset.resourceDamage = 0;
                         shouldUpdateCount = true;
                     }
                     if (shouldUpdateCount)
@@ -179,28 +179,28 @@ namespace AntiGrief
                     ItemMagazineAsset magAsset = asset as ItemMagazineAsset;
                     if (magAsset.barricadeDamage > 0 && Configuration.Instance.NegateBarricadeDamage)
                     {
-                        magAsset.GetType().GetField("_barricadeDamage", bindingFlags).SetValue(magAsset, 0);
+                        magAsset.barricadeDamage = 0;
                         shouldUpdateCount = true;
                     }
                     if (magAsset.structureDamage > 0 && Configuration.Instance.NegateStructureDamage)
                     {
-                        magAsset.GetType().GetField("_structureDamage", bindingFlags).SetValue(magAsset, 0);
+                        magAsset.structureDamage = 0;
                         shouldUpdateCount = true;
                     }
                     if (magAsset.vehicleDamage > 0 && Configuration.Instance.NegateVehicleDamage)
                     {
-                        magAsset.GetType().GetField("_vehicleDamage", bindingFlags).SetValue(magAsset, 0);
+                        magAsset.vehicleDamage = 0;
                         shouldUpdateCount = true;
                     }
 
                     if (magAsset.objectDamage > 0 && Configuration.Instance.NegateObjectDamage)
                     {
-                        magAsset.GetType().GetField("_objectDamage", bindingFlags).SetValue(magAsset, 0);
+                        magAsset.objectDamage = 0;
                         shouldUpdateCount = true;
                     }
                     if (magAsset.resourceDamage > 0 && Configuration.Instance.NegateResourceDamage)
                     {
-                        magAsset.GetType().GetField("_resourceDamage", bindingFlags).SetValue(magAsset, 0);
+                        magAsset.resourceDamage = 0;
                         shouldUpdateCount = true;
                     }
                     if (shouldUpdateCount)
@@ -241,7 +241,7 @@ namespace AntiGrief
                     }
                     if (sasset.isVulnerable && Configuration.Instance.MakeElementsInvulnerable)
                     {
-                        sasset .GetType().GetField("_isVulnerable", bindingFlags).SetValue(sasset , false);
+                        sasset.GetType().GetField("_isVulnerable", bindingFlags).SetValue(sasset , false);
                         shouldUpdateCount = true;
                     }
                 }
@@ -269,12 +269,12 @@ namespace AntiGrief
                 VehicleAsset vAsset = asset as VehicleAsset;
                 if (!vAsset.isVulnerable && Configuration.Instance.MakeVehiclesInvulnerable)
                 {
-                    vAsset.GetType().GetField("_isVulnerable", bindingFlags).SetValue(vAsset, false);
+                    vAsset.isVulnerable = true;
                     shouldUpdateCount = true;
                 }
                 if (vAsset.canTiresBeDamaged && Configuration.Instance.MakeTiresInvulnerable)
                 {
-                    vAsset.GetType().GetProperty("canTiresBeDamaged", bindingFlags | BindingFlags.Public).SetValue(vAsset, false, null);
+                    vAsset.canTiresBeDamaged = false;
                     shouldUpdateCount = true;
                 }
                 if (vAsset.healthMax < Configuration.Instance.MinVehicleSpawnHealth && Configuration.Instance.ModifyMinVehicleSpawnHealth)
