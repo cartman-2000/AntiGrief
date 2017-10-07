@@ -18,15 +18,15 @@ namespace AntiGrief
             Instance = this;
             Configuration.Save();
 
-            Level.onPostLevelLoaded += OnPostLevelLoaded;
+            Level.onPrePreLevelLoaded = OnPrePreLevelLoaded + Level.onPrePreLevelLoaded;
         }
 
         protected override void Unload()
         {
-            Level.onPostLevelLoaded -= OnPostLevelLoaded;
+            Level.onPrePreLevelLoaded -= OnPrePreLevelLoaded;
         }
 
-        private void OnPostLevelLoaded(int level)
+        private void OnPrePreLevelLoaded(int level)
         {
             Asset[] AssetList = Assets.find(EAssetType.ITEM);
 
