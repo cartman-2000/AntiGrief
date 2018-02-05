@@ -13,11 +13,12 @@ namespace AntiGrief
         public bool NegateObjectDamage = false;
         public bool NegateResourceDamage = false;
 
-        public bool MakeVehiclesInvulnerable = true;
+        public bool MakeVehiclesInvulnerable = false;
         public bool MakeTiresInvulnerable = true;
 
         public bool ModifyMinVehicleSpawnHealth = false;
         public ushort MinVehicleSpawnHealth = 4000;
+        public bool VehicleSetMobileBuildables = false;
 
         public bool ModifyMinElementSpawnHealth = false;
         public ushort MinElementSpawnHealth = 1000;

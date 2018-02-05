@@ -267,9 +267,12 @@ namespace AntiGrief
                     continue;
 
                 VehicleAsset vAsset = asset as VehicleAsset;
-                if (!vAsset.isVulnerable && Configuration.Instance.MakeVehiclesInvulnerable)
+                if (vAsset.isVulnerable && Configuration.Instance.MakeVehiclesInvulnerable)
                 {
-                    vAsset.isVulnerable = true;
+                    vAsset.isVulnerable = false;
+                    vAsset.isVulnerableToBumper = false;
+                    vAsset.isVulnerableToEnvironment = false;
+                    vAsset.isVulnerableToExplosions = false;
                     shouldUpdateCount = true;
                 }
                 if (vAsset.canTiresBeDamaged && Configuration.Instance.MakeTiresInvulnerable)
@@ -280,6 +283,13 @@ namespace AntiGrief
                 if (vAsset.healthMax < Configuration.Instance.MinVehicleSpawnHealth && Configuration.Instance.ModifyMinVehicleSpawnHealth)
                 {
                     vAsset.GetType().GetField("_healthMax", bindingFlags).SetValue(vAsset, Configuration.Instance.MinVehicleSpawnHealth);
+                    shouldUpdateCount = true;
+                }
+                if (!vAsset.supportsMobileBuildables && Configuration.Instance.VehicleSetMobileBuildables)
+                {
+                    vAsset.GetType().GetProperty("supportsMobileBuildables", bindingFlags | BindingFlags.Public).SetValue(vAsset, true, null);
+                    // Bundle hash needs to be disabled for these, as this flag for this needs to be set client side as well.
+                    vAsset.GetType().GetField("_shouldVerifyHash", bindingFlags).SetValue(vAsset, false);
                     shouldUpdateCount = true;
                 }
                 if (shouldUpdateCount)
