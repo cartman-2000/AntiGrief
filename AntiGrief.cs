@@ -267,7 +267,7 @@ namespace AntiGrief
                     continue;
 
                 VehicleAsset vAsset = asset as VehicleAsset;
-                if (vAsset.isVulnerable && Configuration.Instance.MakeVehiclesInvulnerable)
+                if ((vAsset.isVulnerable || vAsset.isVulnerableToBumper || vAsset.isVulnerableToEnvironment || vAsset.isVulnerableToExplosions) && Configuration.Instance.MakeVehiclesInvulnerable)
                 {
                     vAsset.isVulnerable = false;
                     vAsset.isVulnerableToBumper = false;
