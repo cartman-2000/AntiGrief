@@ -29,7 +29,7 @@ namespace AntiGrief
         public List<ushort> SkipItemIDs = new List<ushort>();
 
         [XmlArray("SkipElementIDs"), XmlArrayItem(ElementName = "ID")]
-        public List<ushort> SkilElementIDs = new List<ushort>();
+        public List<ushort> SkipElementIDs = new List<ushort>();
 
         [XmlArray("SkipVehicleIDs"), XmlArrayItem(ElementName = "ID")]
         public List<ushort> SkipVehicleIDs = new List<ushort>();
@@ -40,7 +40,7 @@ namespace AntiGrief
             {
                 { 76 },
             };
-            SkilElementIDs = new List<ushort>()
+            SkipElementIDs = new List<ushort>()
             {
                 { 383 },
                 { 384 },

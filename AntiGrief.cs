@@ -56,9 +56,9 @@ namespace AntiGrief
                         break;
                     }
                 }
-                for (int se = 0; se < Configuration.Instance.SkilElementIDs.Count; se++)
+                for (int se = 0; se < Configuration.Instance.SkipElementIDs.Count; se++)
                 {
-                    if (asset.id == Configuration.Instance.SkilElementIDs[se])
+                    if (asset.id == Configuration.Instance.SkipElementIDs[se])
                     {
                         shouldSkip = true;
                         break;
