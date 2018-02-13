@@ -248,7 +248,7 @@ namespace AntiGrief
                 if (asset is ItemStorageAsset)
                 {
                     ItemStorageAsset stasset = asset as ItemStorageAsset;
-                    if (stasset.isDisplay && !stasset.isLocked && Configuration.Instance.MakeDisplaysLocked)
+                    if ((stasset.isDisplay && !stasset.isLocked && Configuration.Instance.MakeDisplaysLocked) || (!stasset.isLocked && Configuration.Instance.MakeContainersLocked))
                     {
                         stasset.GetType().GetField("_isLocked", bindingFlags).SetValue(stasset, true);
                         shouldUpdateCount = true;

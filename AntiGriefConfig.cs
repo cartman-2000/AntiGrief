@@ -25,6 +25,7 @@ namespace AntiGrief
         public bool MakeElementsExplosionProof = false;
         public bool MakeElementsInvulnerable = false;
 
+        public bool MakeContainersLocked = false;
         public bool MakeDisplaysLocked = false;
 
         [XmlArray("SkipItemIDs"), XmlArrayItem(ElementName = "ID")]
