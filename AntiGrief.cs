@@ -245,6 +245,15 @@ namespace AntiGrief
                         shouldUpdateCount = true;
                     }
                 }
+                if (asset is ItemStorageAsset)
+                {
+                    ItemStorageAsset stasset = asset as ItemStorageAsset;
+                    if (stasset.isDisplay && !stasset.isLocked && Configuration.Instance.MakeDisplaysLocked)
+                    {
+                        stasset.GetType().GetField("_isLocked", bindingFlags).SetValue(stasset, true);
+                        shouldUpdateCount = true;
+                    }
+                }
                 if (shouldUpdateCount)
                     elementsModified++;
             }
