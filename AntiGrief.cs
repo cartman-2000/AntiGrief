@@ -1,11 +1,18 @@
-﻿using Rocket.Core.Logging;
-using Rocket.Core.Plugins;
-using SDG.Unturned;
+﻿using SDG.Unturned;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Steamworks;
+using UnityEngine;
+using Rocket.Unturned.Player;
+using Rocket.Unturned.Chat;
+using Rocket.Core;
+using Rocket.Core.Plugins;
+using Rocket.API;
+
+using Logger = Rocket.Core.Logging.Logger;
 
 namespace AntiGrief
 {
@@ -19,11 +26,63 @@ namespace AntiGrief
             Configuration.Save();
 
             Level.onPrePreLevelLoaded = OnPrePreLevelLoaded + Level.onPrePreLevelLoaded;
+            BarricadeManager.onDamageBarricadeRequested += OnElementDamaged;
+            StructureManager.onDamageStructureRequested += OnElementDamaged;
         }
 
         protected override void Unload()
         {
             Level.onPrePreLevelLoaded -= OnPrePreLevelLoaded;
+            BarricadeManager.onDamageBarricadeRequested -= OnElementDamaged;
+            StructureManager.onDamageStructureRequested -= OnElementDamaged;
+        }
+
+        private void OnElementDamaged(CSteamID instigatorSteamID, Transform elementTransform, ref ushort pendingTotalDamage, ref bool shouldAllow, EDamageOrigin damageOrigin)
+        {
+            switch (damageOrigin)
+            {
+                case EDamageOrigin.Flamable_Zombie_Explosion:
+                case EDamageOrigin.Mega_Zombie_Boulder:
+                case EDamageOrigin.Radioactive_Zombie_Explosion:
+                case EDamageOrigin.Zombie_Electric_Shock:
+                case EDamageOrigin.Zombie_Fire_Breath:
+                case EDamageOrigin.Zombie_Stomp:
+                case EDamageOrigin.Zombie_Swipe:
+                    {
+                        if (Instance.Configuration.Instance.DisableZombieElementDamage)
+                            shouldAllow = false;
+                        break;
+                    }
+                case EDamageOrigin.Trap_Explosion:
+                case EDamageOrigin.Trap_Wear_And_Tear:
+                    {
+                        if (Instance.Configuration.Instance.DisableZombieTrapDamage)
+                            shouldAllow = false;
+                        break;
+                    }
+/*(Currently broken in Unturned Code.)                case EDamageOrigin.Plant_Harvested:
+                    {
+                        if (Instance.Configuration.Instance.RestrictHarvesting)
+                        {
+                            byte x = 0;
+                            byte y = 0;
+                            ushort plant = 0;
+                            ushort i = 0;
+                            BarricadeRegion region = null;
+                            if (BarricadeManager.tryGetInfo(elementTransform, out x, out y, out plant, out i, out region))
+                            {
+                                BarricadeData data = region.barricades[i];
+                                UnturnedPlayer instigator = UnturnedPlayer.FromCSteamID(instigatorSteamID);
+                                if ((CSteamID)data.owner != instigator.CSteamID && (CSteamID)data.group != instigator.SteamGroupID && !R.Permissions.HasPermission(new RocketPlayer(instigatorSteamID.ToString()), "antigrief.bypass"))
+                                {
+                                    UnturnedChat.Say(instigator, "You're not allowed to Harvest this player's crops!", Color.red);
+                                    shouldAllow = false;
+                                }
+                            }
+                        }
+                        break;
+                    }*/
+            }
         }
 
         private void OnPrePreLevelLoaded(int level)

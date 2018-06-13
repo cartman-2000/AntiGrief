@@ -28,6 +28,12 @@ namespace AntiGrief
         public bool MakeContainersLocked = false;
         public bool MakeDisplaysLocked = false;
 
+        public bool DisableZombieElementDamage = false;
+        public bool DisableZombieTrapDamage = false;
+        public bool RestrictHarvesting = false;
+
+
+
         [XmlArray("SkipItemIDs"), XmlArrayItem(ElementName = "ID")]
         public List<ushort> SkipItemIDs = new List<ushort>();
 
