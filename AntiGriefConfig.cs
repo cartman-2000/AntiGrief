@@ -31,6 +31,7 @@ namespace AntiGrief
         public bool DisableZombieElementDamage = false;
         public bool DisableZombieTrapDamage = false;
         public bool RestrictHarvesting = false;
+        public bool ShowHarvestBlockMessage = true;
 
 
 

@@ -13,6 +13,7 @@ using Rocket.Core.Plugins;
 using Rocket.API;
 
 using Logger = Rocket.Core.Logging.Logger;
+using Rocket.API.Collections;
 
 namespace AntiGrief
 {
@@ -27,14 +28,49 @@ namespace AntiGrief
 
             Level.onPrePreLevelLoaded = OnPrePreLevelLoaded + Level.onPrePreLevelLoaded;
             BarricadeManager.onDamageBarricadeRequested += OnElementDamaged;
+            BarricadeManager.onHarvestPlantRequested += OnHarvested;
             StructureManager.onDamageStructureRequested += OnElementDamaged;
         }
+
 
         protected override void Unload()
         {
             Level.onPrePreLevelLoaded -= OnPrePreLevelLoaded;
             BarricadeManager.onDamageBarricadeRequested -= OnElementDamaged;
+            BarricadeManager.onHarvestPlantRequested -= OnHarvested;
             StructureManager.onDamageStructureRequested -= OnElementDamaged;
+        }
+
+        // Translations
+        public override TranslationList DefaultTranslations
+        {
+            get
+            {
+                return new TranslationList
+                {
+                    { "antigrief_harvest_blocked", "You're not allowed to Harvest this player's crops!" },
+                };
+            }
+        }
+
+        private void OnHarvested(CSteamID steamID, byte x, byte y, ushort plant, ushort index, ref bool shouldAllow)
+        {
+            if (Instance.Configuration.Instance.RestrictHarvesting)
+            {
+
+                BarricadeRegion region = null;
+                if (BarricadeManager.tryGetRegion(x, y, plant, out region) && steamID != (CSteamID)0)
+                {
+                    BarricadeData data = region.barricades[index];
+                    UnturnedPlayer instigator = UnturnedPlayer.FromCSteamID(steamID);
+                    if ((CSteamID)data.owner != instigator.CSteamID && (CSteamID)data.group != instigator.SteamGroupID && !R.Permissions.HasPermission(new RocketPlayer(steamID.ToString()), "antigrief.bypass"))
+                    {
+                        if (Instance.Configuration.Instance.ShowHarvestBlockMessage)
+                            UnturnedChat.Say(steamID, Instance.Translate("antigrief_harvest_blocked"), Color.red);
+                        shouldAllow = false;
+                    }
+                }
+            }
         }
 
         private void OnElementDamaged(CSteamID instigatorSteamID, Transform elementTransform, ref ushort pendingTotalDamage, ref bool shouldAllow, EDamageOrigin damageOrigin)
@@ -60,28 +96,6 @@ namespace AntiGrief
                             shouldAllow = false;
                         break;
                     }
-/*(Currently broken in Unturned Code.)                case EDamageOrigin.Plant_Harvested:
-                    {
-                        if (Instance.Configuration.Instance.RestrictHarvesting)
-                        {
-                            byte x = 0;
-                            byte y = 0;
-                            ushort plant = 0;
-                            ushort i = 0;
-                            BarricadeRegion region = null;
-                            if (BarricadeManager.tryGetInfo(elementTransform, out x, out y, out plant, out i, out region))
-                            {
-                                BarricadeData data = region.barricades[i];
-                                UnturnedPlayer instigator = UnturnedPlayer.FromCSteamID(instigatorSteamID);
-                                if ((CSteamID)data.owner != instigator.CSteamID && (CSteamID)data.group != instigator.SteamGroupID && !R.Permissions.HasPermission(new RocketPlayer(instigatorSteamID.ToString()), "antigrief.bypass"))
-                                {
-                                    UnturnedChat.Say(instigator, "You're not allowed to Harvest this player's crops!", Color.red);
-                                    shouldAllow = false;
-                                }
-                            }
-                        }
-                        break;
-                    }*/
             }
         }
 
