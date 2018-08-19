@@ -298,6 +298,11 @@ namespace AntiGrief
                         basset.GetType().GetField("_isVulnerable", bindingFlags).SetValue(basset, false);
                         shouldUpdateCount = true;
                     }
+                    if ((basset.build == EBuild.SIGN || basset.build == EBuild.SIGN_WALL || basset.build == EBuild.NOTE) && !basset.isLocked && Configuration.Instance.MakeSignsLocked)
+                    {
+                        basset.GetType().GetField("_isLocked", bindingFlags).SetValue(basset, true);
+                        shouldUpdateCount = true;
+                    }
                 }
                 if (asset is ItemStructureAsset)
                 {

@@ -27,6 +27,8 @@ namespace AntiGrief
 
         public bool MakeContainersLocked = false;
         public bool MakeDisplaysLocked = false;
+        public bool MakeSignsLocked = false;
+
 
         public bool DisableZombieElementDamage = false;
         public bool DisableZombieTrapDamage = false;
