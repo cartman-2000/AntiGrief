@@ -331,6 +331,19 @@ namespace AntiGrief
                         stasset.GetType().GetField("_isLocked", bindingFlags).SetValue(stasset, true);
                         shouldUpdateCount = true;
                     }
+                    if (stasset.isDisplay && Configuration.Instance.ModDisplayGrid)
+                    {
+                        if (stasset.storage_y < Configuration.Instance.DisplayGridY)
+                        {
+                            stasset.GetType().GetField("_storage_y", bindingFlags).SetValue(stasset, Configuration.Instance.DisplayGridY);
+                            shouldUpdateCount = true;
+                        }
+                        if (stasset.storage_x < Configuration.Instance.DisplayGridX)
+                        {
+                            stasset.GetType().GetField("_storage_x", bindingFlags).SetValue(stasset, Configuration.Instance.DisplayGridX);
+                            shouldUpdateCount = true;
+                        }
+                    }
                 }
                 if (shouldUpdateCount)
                     elementsModified++;

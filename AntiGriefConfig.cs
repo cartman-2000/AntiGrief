@@ -27,6 +27,9 @@ namespace AntiGrief
 
         public bool MakeContainersLocked = false;
         public bool MakeDisplaysLocked = false;
+        public bool ModDisplayGrid = false;
+        public byte DisplayGridX = 5;
+        public byte DisplayGridY = 5;
         public bool MakeSignsLocked = false;
 
 
