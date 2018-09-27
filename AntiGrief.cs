@@ -28,18 +28,30 @@ namespace AntiGrief
 
             Level.onPrePreLevelLoaded = OnPrePreLevelLoaded + Level.onPrePreLevelLoaded;
             BarricadeManager.onDamageBarricadeRequested += OnElementDamaged;
-            BarricadeManager.onHarvestPlantRequested += OnHarvested;
             StructureManager.onDamageStructureRequested += OnElementDamaged;
+            if (Instance.Configuration.Instance.RestrictHarvesting)
+                BarricadeManager.onHarvestPlantRequested -= OnHarvested;
+            if (Instance.Configuration.Instance.EnableItemDropRestriction)
+                ItemManager.onServerSpawningItemDrop += OnServerSpawningItemDrop;
         }
-
 
         protected override void Unload()
         {
             Level.onPrePreLevelLoaded -= OnPrePreLevelLoaded;
             BarricadeManager.onDamageBarricadeRequested -= OnElementDamaged;
-            BarricadeManager.onHarvestPlantRequested -= OnHarvested;
             StructureManager.onDamageStructureRequested -= OnElementDamaged;
+            if (Instance.Configuration.Instance.RestrictHarvesting)
+                BarricadeManager.onHarvestPlantRequested -= OnHarvested;
+            if (Instance.Configuration.Instance.EnableItemDropRestriction)
+                ItemManager.onServerSpawningItemDrop -= OnServerSpawningItemDrop;
         }
+
+        private void OnServerSpawningItemDrop(Item item, ref Vector3 location, ref bool shouldAllow)
+        {
+            if (Instance.Configuration.Instance.ItemDropDeniedList.FirstOrDefault(i => i == item.id) != 0)
+                shouldAllow = false;
+        }
+
 
         // Translations
         public override TranslationList DefaultTranslations
@@ -55,20 +67,16 @@ namespace AntiGrief
 
         private void OnHarvested(CSteamID steamID, byte x, byte y, ushort plant, ushort index, ref bool shouldAllow)
         {
-            if (Instance.Configuration.Instance.RestrictHarvesting)
+            BarricadeRegion region = null;
+            if (BarricadeManager.tryGetRegion(x, y, plant, out region) && steamID != (CSteamID)0)
             {
-
-                BarricadeRegion region = null;
-                if (BarricadeManager.tryGetRegion(x, y, plant, out region) && steamID != (CSteamID)0)
+                BarricadeData data = region.barricades[index];
+                UnturnedPlayer instigator = UnturnedPlayer.FromCSteamID(steamID);
+                if ((CSteamID)data.owner != instigator.CSteamID && (CSteamID)data.group != instigator.SteamGroupID && !R.Permissions.HasPermission(new RocketPlayer(steamID.ToString()), "antigrief.bypass"))
                 {
-                    BarricadeData data = region.barricades[index];
-                    UnturnedPlayer instigator = UnturnedPlayer.FromCSteamID(steamID);
-                    if ((CSteamID)data.owner != instigator.CSteamID && (CSteamID)data.group != instigator.SteamGroupID && !R.Permissions.HasPermission(new RocketPlayer(steamID.ToString()), "antigrief.bypass"))
-                    {
-                        if (Instance.Configuration.Instance.ShowHarvestBlockMessage)
-                            UnturnedChat.Say(steamID, Instance.Translate("antigrief_harvest_blocked"), Color.red);
-                        shouldAllow = false;
-                    }
+                    if (Instance.Configuration.Instance.ShowHarvestBlockMessage)
+                        UnturnedChat.Say(steamID, Instance.Translate("antigrief_harvest_blocked"), Color.red);
+                    shouldAllow = false;
                 }
             }
         }

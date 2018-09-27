@@ -38,6 +38,10 @@ namespace AntiGrief
         public bool RestrictHarvesting = false;
         public bool ShowHarvestBlockMessage = true;
 
+        public bool EnableItemDropRestriction = false;
+        [XmlArray("ItemDropDeniedList"), XmlArrayItem(ElementName = "ID")]
+        public List<ushort> ItemDropDeniedList = new List<ushort>();
+
 
 
         [XmlArray("SkipItemIDs"), XmlArrayItem(ElementName = "ID")]
@@ -51,6 +55,10 @@ namespace AntiGrief
 
         public void LoadDefaults()
         {
+            ItemDropDeniedList = new List<ushort>()
+            {
+                { 1353 },
+            };
             SkipItemIDs = new List<ushort>()
             {
                 { 76 },
