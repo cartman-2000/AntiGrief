@@ -14,12 +14,14 @@ using Rocket.API;
 
 using Logger = Rocket.Core.Logging.Logger;
 using Rocket.API.Collections;
+using Rocket.Unturned.Items;
 
 namespace AntiGrief
 {
     public class AntiGrief : RocketPlugin<AntiGriefConfig>
     {
         public AntiGrief Instance;
+        private DateTime CurTime = DateTime.Now;
 
         protected override void Load()
         {
@@ -33,6 +35,11 @@ namespace AntiGrief
                 BarricadeManager.onHarvestPlantRequested -= OnHarvested;
             if (Instance.Configuration.Instance.EnableItemDropRestriction)
                 ItemManager.onServerSpawningItemDrop += OnServerSpawningItemDrop;
+            // Enable Fixed Update if restricted item check is enabled.
+            if (Instance.Configuration.Instance.EnableInvRestrictedItemCheck)
+                enabled = true;
+            else
+                enabled = false;
         }
 
         protected override void Unload()
@@ -44,6 +51,7 @@ namespace AntiGrief
                 BarricadeManager.onHarvestPlantRequested -= OnHarvested;
             if (Instance.Configuration.Instance.EnableItemDropRestriction)
                 ItemManager.onServerSpawningItemDrop -= OnServerSpawningItemDrop;
+            enabled = false;
         }
 
         private void OnServerSpawningItemDrop(Item item, ref Vector3 location, ref bool shouldAllow)
@@ -52,6 +60,43 @@ namespace AntiGrief
                 shouldAllow = false;
         }
 
+        public void FixedUpdate()
+        {
+            if (Level.isLoaded && Provider.clients.Count > 0)
+            {
+                // begin restricted inv item check block.
+                if ((DateTime.Now - CurTime).TotalSeconds > Instance.Configuration.Instance.CheckFrequency)
+                {
+                    for (int i = 0; i < Provider.clients.Count; i++)
+                    {
+                        UnturnedPlayer player = UnturnedPlayer.FromSteamPlayer(Provider.clients[i]);
+                        if (player == null)
+                            continue;
+                        if (!R.Permissions.HasPermission(player, "ir.safe"))
+                        {
+                            for (int invi = 0; invi < Instance.Configuration.Instance.ItemInvRestrictedList.Count; invi++)
+                            {
+                                ushort restrictedItemID = Instance.Configuration.Instance.ItemInvRestrictedList[invi];
+                                for (byte page = 0; page < PlayerInventory.PAGES && player.Inventory.items != null && player.Inventory.items[page] != null; page++)
+                                {
+                                    for (byte itemI = 0; itemI < player.Inventory.getItemCount(page); itemI++)
+                                    {
+                                        if (player.Inventory.getItem(page, itemI).item.id == restrictedItemID)
+                                        {
+                                            ItemAsset itemAsset = UnturnedItems.GetItemAssetById(restrictedItemID);
+                                            if (itemAsset == null)
+                                                continue;
+                                            UnturnedChat.Say(player, Translate("antigrief_inv_restricted", itemAsset.itemName, itemAsset.id));
+                                            player.Inventory.removeItem(page, itemI);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         // Translations
         public override TranslationList DefaultTranslations
@@ -61,6 +106,7 @@ namespace AntiGrief
                 return new TranslationList
                 {
                     { "antigrief_harvest_blocked", "You're not allowed to Harvest this player's crops!" },
+                    { "antigrief_inv_restricted", "Restricted Item has been removed from Inventory: {0}({1})" }
                 };
             }
         }

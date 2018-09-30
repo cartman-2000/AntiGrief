@@ -39,10 +39,14 @@ namespace AntiGrief
         public bool ShowHarvestBlockMessage = true;
 
         public bool EnableItemDropRestriction = false;
+        public bool EnableInvRestrictedItemCheck = false;
+        public float CheckFrequency = 2; 
+
         [XmlArray("ItemDropDeniedList"), XmlArrayItem(ElementName = "ID")]
         public List<ushort> ItemDropDeniedList = new List<ushort>();
 
-
+        [XmlArray("ItemInvRestrictedList"), XmlArrayItem(ElementName = "ID")]
+        public List<ushort> ItemInvRestrictedList = new List<ushort>();
 
         [XmlArray("SkipItemIDs"), XmlArrayItem(ElementName = "ID")]
         public List<ushort> SkipItemIDs = new List<ushort>();
@@ -59,16 +63,24 @@ namespace AntiGrief
             {
                 { 1353 },
             };
+
+            ItemInvRestrictedList = new List<ushort>()
+            {
+                { 1353 },
+            };
+
             SkipItemIDs = new List<ushort>()
             {
                 { 76 },
             };
+
             SkipElementIDs = new List<ushort>()
             {
                 { 383 },
                 { 384 },
                 { 385 },
             };
+
             SkipVehicleIDs = new List<ushort>()
             {
                 { 91 },
