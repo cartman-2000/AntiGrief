@@ -32,7 +32,7 @@ namespace AntiGrief
             BarricadeManager.onDamageBarricadeRequested += OnElementDamaged;
             StructureManager.onDamageStructureRequested += OnElementDamaged;
             if (Instance.Configuration.Instance.RestrictHarvesting)
-                BarricadeManager.onHarvestPlantRequested -= OnHarvested;
+                BarricadeManager.onHarvestPlantRequested += OnHarvested;
             if (Instance.Configuration.Instance.EnableItemDropRestriction)
                 ItemManager.onServerSpawningItemDrop += OnServerSpawningItemDrop;
             // Enable Fixed Update if restricted item check is enabled.
