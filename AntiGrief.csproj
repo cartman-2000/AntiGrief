@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AntiGrief</RootNamespace>
     <AssemblyName>AntiGrief</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,15 +40,15 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Rocket.API">
-      <HintPath>lib\Rocket.API.dll</HintPath>
+      <HintPath>lib.rocket\Rocket.API.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Rocket.Core">
-      <HintPath>lib\Rocket.Core.dll</HintPath>
+      <HintPath>lib.rocket\Rocket.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Rocket.Unturned">
-      <HintPath>lib\Rocket.Unturned.dll</HintPath>
+      <HintPath>lib.rocket\Rocket.Unturned.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -58,6 +59,10 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>lib\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>lib\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

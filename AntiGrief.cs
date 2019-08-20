@@ -33,13 +33,10 @@ namespace AntiGrief
             StructureManager.onDamageStructureRequested += OnElementDamaged;
             if (Instance.Configuration.Instance.RestrictHarvesting)
                 BarricadeManager.onHarvestPlantRequested += OnHarvested;
+            if (Configuration.Instance.VehicleCarjackOwnerGroupOnly)
+                VehicleManager.onVehicleCarjacked += OnCarjacked;
             if (Instance.Configuration.Instance.EnableItemDropRestriction)
                 ItemManager.onServerSpawningItemDrop += OnServerSpawningItemDrop;
-            // Enable Fixed Update if restricted item check is enabled.
-            if (Instance.Configuration.Instance.EnableInvRestrictedItemCheck)
-                enabled = true;
-            else
-                enabled = false;
         }
 
         protected override void Unload()
@@ -49,9 +46,10 @@ namespace AntiGrief
             StructureManager.onDamageStructureRequested -= OnElementDamaged;
             if (Instance.Configuration.Instance.RestrictHarvesting)
                 BarricadeManager.onHarvestPlantRequested -= OnHarvested;
+            if (Configuration.Instance.VehicleCarjackOwnerGroupOnly)
+                VehicleManager.onVehicleCarjacked -= OnCarjacked;
             if (Instance.Configuration.Instance.EnableItemDropRestriction)
                 ItemManager.onServerSpawningItemDrop -= OnServerSpawningItemDrop;
-            enabled = false;
         }
 
         private void OnServerSpawningItemDrop(Item item, ref Vector3 location, ref bool shouldAllow)
@@ -60,13 +58,23 @@ namespace AntiGrief
                 shouldAllow = false;
         }
 
+        private void OnCarjacked(InteractableVehicle vehicle, Player instigatingPlayer, ref bool allow, ref Vector3 force, ref Vector3 torque)
+        {
+            SteamPlayerID spID = instigatingPlayer.channel.owner.playerID;
+            if (!vehicle.isLocked || vehicle.lockedOwner == spID.steamID || vehicle.lockedGroup == spID.group)
+                allow = true;
+            else
+                allow = false;
+        }
+
         public void FixedUpdate()
         {
-            if (Level.isLoaded && Provider.clients.Count > 0)
+            if (Level.isLoaded && Provider.clients.Count > 0 && Instance.Configuration.Instance.EnableInvRestrictedItemCheck)
             {
                 // begin restricted inv item check block.
                 if ((DateTime.Now - CurTime).TotalSeconds > Instance.Configuration.Instance.CheckFrequency)
                 {
+                    CurTime = DateTime.Now;
                     for (int i = 0; i < Provider.clients.Count; i++)
                     {
                         UnturnedPlayer player = UnturnedPlayer.FromSteamPlayer(Provider.clients[i]);
@@ -113,8 +121,7 @@ namespace AntiGrief
 
         private void OnHarvested(CSteamID steamID, byte x, byte y, ushort plant, ushort index, ref bool shouldAllow)
         {
-            BarricadeRegion region = null;
-            if (BarricadeManager.tryGetRegion(x, y, plant, out region) && steamID != (CSteamID)0)
+            if (BarricadeManager.tryGetRegion(x, y, plant, out BarricadeRegion region) && steamID != (CSteamID)0)
             {
                 BarricadeData data = region.barricades[index];
                 UnturnedPlayer instigator = UnturnedPlayer.FromCSteamID(steamID);
@@ -140,6 +147,15 @@ namespace AntiGrief
                 case EDamageOrigin.Zombie_Swipe:
                     {
                         if (Instance.Configuration.Instance.DisableZombieElementDamage)
+                            shouldAllow = false;
+                        break;
+                    }
+                case EDamageOrigin.Punch:
+                case EDamageOrigin.Vehicle_Bumper:
+                case EDamageOrigin.Vehicle_Explosion:
+                case EDamageOrigin.Food_Explosion:
+                    {
+                        if (Instance.Configuration.Instance.DisableMiscElementDamage)
                             shouldAllow = false;
                         break;
                     }
@@ -342,7 +358,7 @@ namespace AntiGrief
                         basset.GetType().GetField("_health", bindingFlags).SetValue(basset, Configuration.Instance.MinElementSpawnHealth);
                         shouldUpdateCount = true;
                     }
-                    if (!basset.proofExplosion && Configuration.Instance.MakeElementsExplosionProof)
+                    if (!basset.proofExplosion && Configuration.Instance.MakeElementsExplosionProof && (Configuration.Instance.MakeElementsExplosionProofIncludeTraps ? true : !(asset is ItemTrapAsset)))
                     {
                         basset.GetType().GetField("_proofExplosion", bindingFlags).SetValue(basset, true);
                         shouldUpdateCount = true;
@@ -426,6 +442,11 @@ namespace AntiGrief
                     vAsset.isVulnerable = false;
                     vAsset.isVulnerableToBumper = false;
                     vAsset.isVulnerableToEnvironment = false;
+                    vAsset.isVulnerableToExplosions = false;
+                    shouldUpdateCount = true;
+                }
+                if (vAsset.isVulnerableToExplosions && Configuration.Instance.MakeVehiclesInvulnerableExplosions)
+                {
                     vAsset.isVulnerableToExplosions = false;
                     shouldUpdateCount = true;
                 }

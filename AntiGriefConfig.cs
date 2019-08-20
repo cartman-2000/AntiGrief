@@ -14,15 +14,17 @@ namespace AntiGrief
         public bool NegateResourceDamage = false;
 
         public bool MakeVehiclesInvulnerable = false;
+        public bool MakeVehiclesInvulnerableExplosions = true;
         public bool MakeTiresInvulnerable = true;
-
+        public bool VehicleCarjackOwnerGroupOnly = true;
         public bool ModifyMinVehicleSpawnHealth = false;
         public ushort MinVehicleSpawnHealth = 4000;
         public bool VehicleSetMobileBuildables = false;
 
         public bool ModifyMinElementSpawnHealth = false;
         public ushort MinElementSpawnHealth = 1000;
-        public bool MakeElementsExplosionProof = false;
+        public bool MakeElementsExplosionProof = true;
+        public bool MakeElementsExplosionProofIncludeTraps = false;
         public bool MakeElementsInvulnerable = false;
 
         public bool MakeContainersLocked = false;
@@ -33,14 +35,16 @@ namespace AntiGrief
         public bool MakeSignsLocked = false;
 
 
-        public bool DisableZombieElementDamage = false;
+        public bool DisableZombieElementDamage = true;
         public bool DisableZombieTrapDamage = false;
+        public bool DisableMiscElementDamage = true;
+
         public bool RestrictHarvesting = false;
         public bool ShowHarvestBlockMessage = true;
 
         public bool EnableItemDropRestriction = false;
         public bool EnableInvRestrictedItemCheck = false;
-        public float CheckFrequency = 2; 
+        public float CheckFrequency = 1; 
 
         [XmlArray("ItemDropDeniedList"), XmlArrayItem(ElementName = "ID")]
         public List<ushort> ItemDropDeniedList = new List<ushort>();
@@ -83,7 +87,7 @@ namespace AntiGrief
 
             SkipVehicleIDs = new List<ushort>()
             {
-                { 91 },
+                { 186 },
             };
         }
     }
