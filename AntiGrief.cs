@@ -1,9 +1,7 @@
 ﻿using SDG.Unturned;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Steamworks;
 using UnityEngine;
 using Rocket.Unturned.Player;
@@ -25,6 +23,7 @@ namespace AntiGrief
 
         protected override void Load()
         {
+            Logger.Log("AntiGrief has been loaded!");
             Instance = this;
             Configuration.Save();
 
@@ -41,6 +40,7 @@ namespace AntiGrief
 
         protected override void Unload()
         {
+            Logger.Log("AntiGrief has been unloaded!");
             Level.onPrePreLevelLoaded -= OnPrePreLevelLoaded;
             BarricadeManager.onDamageBarricadeRequested -= OnElementDamaged;
             StructureManager.onDamageStructureRequested -= OnElementDamaged;

@@ -42,6 +42,7 @@ dlldata.c
 project.lock.json
 artifacts/
 
+*.cache
 *_i.c
 *_p.c
 *_i.h
@@ -66,6 +67,7 @@ artifacts/
 *.pidb
 *.svclog
 *.scc
+
 
 # Chutzpah Test files
 _Chutzpah*
@@ -210,3 +212,4 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+*.cache
