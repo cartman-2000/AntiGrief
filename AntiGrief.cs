@@ -125,7 +125,7 @@ namespace AntiGrief
             {
                 BarricadeData data = region.barricades[index];
                 UnturnedPlayer instigator = UnturnedPlayer.FromCSteamID(steamID);
-                if ((CSteamID)data.owner != instigator.CSteamID && (CSteamID)data.group != instigator.SteamGroupID && !R.Permissions.HasPermission(new RocketPlayer(steamID.ToString()), "antigrief.bypass"))
+                if ((CSteamID)data.owner != instigator.CSteamID && (CSteamID)data.group != instigator.Player.quests.groupID && !R.Permissions.HasPermission(new RocketPlayer(steamID.ToString()), "antigrief.bypass"))
                 {
                     if (Instance.Configuration.Instance.ShowHarvestBlockMessage)
                         UnturnedChat.Say(steamID, Instance.Translate("antigrief_harvest_blocked"), Color.red);
@@ -396,7 +396,8 @@ namespace AntiGrief
                 if (asset is ItemStorageAsset)
                 {
                     ItemStorageAsset stasset = asset as ItemStorageAsset;
-                    if ((stasset.isDisplay && !stasset.isLocked && Configuration.Instance.MakeDisplaysLocked) || (!stasset.isLocked && Configuration.Instance.MakeContainersLocked))
+                    // make displays locked, or normal unlocked containers locked(excluding the airdrop container.).
+                    if ((stasset.isDisplay && !stasset.isLocked && Configuration.Instance.MakeDisplaysLocked) || (!stasset.isLocked && Configuration.Instance.MakeContainersLocked && stasset.id != 1374))
                     {
                         stasset.GetType().GetField("_isLocked", bindingFlags).SetValue(stasset, true);
                         shouldUpdateCount = true;
