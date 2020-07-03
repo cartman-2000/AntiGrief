@@ -125,7 +125,7 @@ namespace AntiGrief
             {
                 BarricadeData data = region.barricades[index];
                 UnturnedPlayer instigator = UnturnedPlayer.FromCSteamID(steamID);
-                if ((CSteamID)data.owner != instigator.CSteamID && (CSteamID)data.group != instigator.Player.quests.groupID && !R.Permissions.HasPermission(new RocketPlayer(steamID.ToString()), "antigrief.bypass"))
+                if ((CSteamID)data.owner != instigator.CSteamID && ((CSteamID)data.group != instigator.Player.quests.groupID || data.group == 0) && !R.Permissions.HasPermission(new RocketPlayer(steamID.ToString()), "antigrief.bypass"))
                 {
                     if (Instance.Configuration.Instance.ShowHarvestBlockMessage)
                         UnturnedChat.Say(steamID, Instance.Translate("antigrief_harvest_blocked"), Color.red);
